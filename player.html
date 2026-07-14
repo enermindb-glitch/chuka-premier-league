@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player — Chuka Premier League</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site">
+  <img class="logo" src="logo-cpl.png" alt="CPL logo" onerror="this.style.display='none'">
+  <div class="brand"><strong>Chuka Premier League</strong><span>2026 Season</span></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="league-a.html">League A</a>
+    <a href="league-b.html">League B</a>
+    <a href="news.html">News</a>
+    <a href="equipment.html">Equipment</a>
+    <a href="enquiries.html">Enquiries</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main>
+  <div class="panel player-header" id="playerHeader">
+    <p class="loading">Loading player…</p>
+  </div>
+
+  <div class="panel">
+    <h2>Bio</h2>
+    <div id="playerBio"><p class="loading">Loading…</p></div>
+  </div>
+
+  <div class="panel">
+    <h2>Season Stats</h2>
+    <div id="playerStats"><p class="loading">Loading…</p></div>
+  </div>
+
+  <div class="panel">
+    <button id="downloadCardBtn" style="display:none;">Download my card</button>
+  </div>
+
+  <!-- ===== PIN-protected edit section ===== -->
+  <div class="panel" id="editSection" style="display:none;">
+    <h2>Edit my profile</h2>
+    <p style="color:var(--muted);font-size:0.85rem;">This is your own profile? Enter your CPL number's PIN (given at registration) to edit your bio, position, or photo.</p>
+    <button id="unlockBtn" class="btn secondary">Edit my profile</button>
+
+    <div id="unlockPrompt" style="display:none;margin-top:16px;">
+      <form id="unlockForm">
+        <label>PIN</label>
+        <input type="text" id="unlockPinInput" inputmode="numeric" placeholder="4-digit PIN" required>
+        <button type="submit" id="unlockSubmitBtn">Unlock</button>
+      </form>
+    </div>
+
+    <div id="editFormWrap" style="display:none;margin-top:16px;">
+      <form id="editForm">
+        <label>Position</label>
+        <input type="text" id="positionInput" placeholder="e.g. Striker">
+
+        <label>Bio</label>
+        <textarea id="bioInput" maxlength="1000" placeholder="A few lines about you"></textarea>
+
+        <button type="submit" id="saveProfileBtn">Save changes</button>
+        <button type="button" id="cancelEditBtn" class="btn secondary">Cancel</button>
+      </form>
+
+      <label style="margin-top:24px;">Profile photo</label>
+      <input type="file" id="photoInput" accept="image/*">
+      <div class="avatar-preview-wrap">
+        <img id="photoPreview" class="avatar-preview" alt="Preview">
+      </div>
+      <button type="button" id="uploadPhotoBtn" class="btn secondary">Upload photo</button>
+
+      <div class="msg" id="editMsg"></div>
+    </div>
+  </div>
+</main>
+
+<footer>Chuka Premier League &middot; <a href="enquiries.html">Contact us</a></footer>
+
+<!-- Hidden-off-canvas card template used by card.js + html2canvas -->
+<div id="playerCardTemplate" style="position:fixed;left:-9999px;top:0;">
+  <div class="cardTop">
+    <div id="cardPhotoWrap"></div>
+    <div>
+      <div id="cardName" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.1rem;"></div>
+      <div id="cardTeam" style="font-size:0.85rem;color:var(--muted);"></div>
+      <div id="cardCpl" class="cpl-number" style="margin-top:4px;"></div>
+      <div id="cardSeason" style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--blueprint-line);"></div>
+    </div>
+  </div>
+  <div class="cardQr" id="cardQr"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="players.js"></script>
+<script src="editProfile.js"></script>
+<script src="card.js"></script>
+</body>
+</html>
