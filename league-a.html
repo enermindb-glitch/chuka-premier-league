@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>League A — Chuka Premier League</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site">
+  <img class="logo" src="logo-cpl.png" alt="CPL logo" onerror="this.style.display='none'">
+  <div class="brand"><strong>Chuka Premier League</strong><span>2026 Season</span></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="league-a.html" class="hi">League A</a>
+    <a href="league-b.html">League B</a>
+    <a href="news.html">News</a>
+    <a href="equipment.html">Equipment</a>
+    <a href="enquiries.html">Enquiries</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main>
+  <p class="eyebrow">Sheet 02 — League A</p>
+  <h1>League A</h1>
+
+  <div class="panel">
+    <h2>Standings</h2>
+    <div id="standingsTable"><p class="loading">Loading standings…</p></div>
+  </div>
+
+  <div class="panel">
+    <h2>Fixtures &amp; Results</h2>
+    <div id="fixturesList"><p class="loading">Loading fixtures…</p></div>
+  </div>
+
+  <div class="panel">
+    <h2>Top Scorers</h2>
+    <div id="topScorersList"><p class="loading">Loading top scorers…</p></div>
+  </div>
+</main>
+
+<footer>Chuka Premier League &middot; <a href="enquiries.html">Contact us</a></footer>
+
+<script>window.LEAGUE_ID = 'A';</script>
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="league.js"></script>
+</body>
+</html>
