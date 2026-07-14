@@ -1,92 +1,98 @@
-// ==========================================================
-// CHUKA PREMIER LEAGUE — shared data helpers
-// Loaded by every page after config.js.
-// ==========================================================
+/* ==========================================================
+   data.js — fetch + parse Google Sheet tabs as CSV
+   Every other *.js file calls fetchTab(tabName) to get an array
+   of plain objects, keyed by the tab's header row.
+   ========================================================== */
 
-const CPL = window.CPL_CONFIG;
-
-/** Build the CSV export URL for a given Sheet tab name. */
-function sheetCsvUrl(tabName) {
-  return `https://docs.google.com/spreadsheets/d/${CPL.SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+/**
+ * Fetches a single tab from the Sheet via the gviz CSV endpoint and
+ * returns it as an array of objects: [{ Header1: val, Header2: val, ... }]
+ */
+async function fetchTab(tabName) {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Could not load "${tabName}" — check SHEET_ID in config.js and that the sheet is shared as "Anyone with the link".`);
+  }
+  const csvText = await res.text();
+  return parseCsv(csvText);
 }
 
-/** Minimal in-memory cache so a page doesn't re-fetch the same tab twice. */
-const _sheetCache = {};
-
-/** Fetch a Sheet tab and return an array of row objects keyed by header. */
-async function fetchSheet(tabName, { forceRefresh = false } = {}) {
-  if (!forceRefresh && _sheetCache[tabName]) return _sheetCache[tabName];
-  const res = await fetch(sheetCsvUrl(tabName));
-  if (!res.ok) throw new Error(`Could not load "${tabName}" (HTTP ${res.status})`);
-  const text = await res.text();
-  const rows = parseCSV(text);
-  _sheetCache[tabName] = rows;
-  return rows;
+/**
+ * Fetches several tabs in parallel. Returns an object keyed by tab name.
+ * Usage: const { Teams_A, Fixtures_A } = await fetchTabs(['Teams_A','Fixtures_A']);
+ */
+async function fetchTabs(tabNames) {
+  const results = await Promise.all(tabNames.map(fetchTab));
+  const out = {};
+  tabNames.forEach((name, i) => { out[name] = results[i]; });
+  return out;
 }
 
-/** Simple, quote-aware CSV parser (handles commas/newlines inside quoted fields). */
-function parseCSV(text) {
+/**
+ * Minimal CSV parser that handles quoted fields (incl. commas and
+ * escaped "" quotes inside them), which the gviz export uses for any
+ * text field containing a comma (e.g. Bio, Notes).
+ */
+function parseCsv(text) {
   const rows = [];
-  let row = [], field = '', inQuotes = false;
+  let row = [];
+  let field = '';
+  let inQuotes = false;
 
   for (let i = 0; i < text.length; i++) {
     const c = text[i];
+    const next = text[i + 1];
+
     if (inQuotes) {
-      if (c === '"') {
-        if (text[i + 1] === '"') { field += '"'; i++; }
-        else { inQuotes = false; }
-      } else {
-        field += c;
-      }
-    } else if (c === '"') {
-      inQuotes = true;
-    } else if (c === ',') {
-      row.push(field); field = '';
-    } else if (c === '\n') {
-      row.push(field); rows.push(row); row = []; field = '';
-    } else if (c === '\r') {
-      // skip, \n handles the line break
+      if (c === '"' && next === '"') { field += '"'; i++; }
+      else if (c === '"') { inQuotes = false; }
+      else { field += c; }
     } else {
-      field += c;
+      if (c === '"') { inQuotes = true; }
+      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === '\n' || c === '\r') {
+        if (c === '\r' && next === '\n') i++;
+        row.push(field); field = '';
+        if (row.some(v => v !== '')) rows.push(row);
+        row = [];
+      } else { field += c; }
     }
   }
-  if (field.length || row.length) { row.push(field); rows.push(row); }
+  if (field !== '' || row.length) { row.push(field); rows.push(row); }
 
-  if (rows.length === 0) return [];
-  const headers = rows.shift().map(h => h.trim());
-  return rows
-    .filter(r => r.some(cell => cell !== ''))
-    .map(r => {
-      const obj = {};
-      headers.forEach((h, i) => { obj[h] = (r[i] ?? '').trim(); });
-      return obj;
-    });
-}
-
-/** Call the Apps Script backend (backend.gs doPost). */
-async function callApi(action, payload = {}) {
-  const res = await fetch(CPL.API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids CORS preflight on Apps Script
-    body: JSON.stringify({ action, ...payload }),
+  if (!rows.length) return [];
+  const headers = rows[0].map(h => h.trim());
+  return rows.slice(1).map(r => {
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = (r[i] || '').trim(); });
+    return obj;
   });
-  return res.json();
 }
 
-/** Read a query-string param, e.g. getParam('team') for team.html?team=Foo */
+/** Small helper: renders a loading/empty state into a container. */
+function setStatus(el, text, isEmpty) {
+  el.innerHTML = `<div class="${isEmpty ? 'empty' : 'loading'}">${text}</div>`;
+}
+
+/** Small helper: escapes text before inserting into innerHTML. */
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, s => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[s]));
+}
+
+/** Reads a query-string param, e.g. getParam('team') for ?team=Eagles */
 function getParam(name) {
   return new URLSearchParams(window.location.search).get(name);
 }
 
-/** Strip the data-URL prefix ("data:image/jpeg;base64,") before sending to Apps Script. */
-function stripBase64Prefix(dataUrl) {
-  const comma = dataUrl.indexOf(',');
-  return comma === -1 ? dataUrl : dataUrl.substring(comma + 1);
-}
-
-/** Escape text before inserting into innerHTML, to avoid Sheet content breaking layout / injecting HTML. */
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str ?? '';
-  return div.innerHTML;
+/** POSTs JSON to the Apps Script web app as text/plain (avoids CORS preflight). */
+async function postToAppsScript(payload) {
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  });
+  return res.json();
 }
