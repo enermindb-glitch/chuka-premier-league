@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enquiries — Chuka Premier League</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site">
+  <img class="logo" src="logo-cpl.png" alt="CPL logo" onerror="this.style.display='none'">
+  <div class="brand"><strong>Chuka Premier League</strong><span>2026 Season</span></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="league-a.html">League A</a>
+    <a href="league-b.html">League B</a>
+    <a href="news.html">News</a>
+    <a href="equipment.html">Equipment</a>
+    <a href="enquiries.html" class="hi">Enquiries</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main class="narrow">
+  <p class="eyebrow">Sheet 07 — Get in Touch</p>
+  <h1>Enquiries</h1>
+  <p>Questions about registration, fixtures, or anything else — send us a message and an admin will get back to you.</p>
+
+  <div class="panel">
+    <form id="enquiryForm">
+      <label>Your name</label>
+      <input type="text" id="enquiryName" required>
+
+      <label>You are a <span class="opt">(optional)</span></label>
+      <select id="enquiryRole">
+        <option value="">Select…</option>
+        <option value="Player">Player</option>
+        <option value="Coach">Coach</option>
+        <option value="Parent/Guardian">Parent / Guardian</option>
+        <option value="Fan">Fan</option>
+        <option value="Sponsor">Sponsor</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label>Team <span class="opt">(optional)</span></label>
+      <input type="text" id="enquiryTeam">
+
+      <label>Subject</label>
+      <input type="text" id="enquirySubject" required>
+
+      <label>Message</label>
+      <textarea id="enquiryMessage" required></textarea>
+
+      <button type="submit" id="enquirySubmitBtn">Send enquiry</button>
+      <div class="msg" id="enquiryMsg"></div>
+    </form>
+  </div>
+</main>
+
+<footer>Chuka Premier League</footer>
+
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="enquiries.js"></script>
+</body>
+</html>
