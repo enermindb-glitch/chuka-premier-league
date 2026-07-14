@@ -286,8 +286,18 @@ footer{
   border-top:1px solid var(--line);
 }
 
-@media(max-width:640px){
-  header.site{flex-wrap:wrap;}
-  header.site nav{margin-left:0;gap:12px;}
-  .player-header{flex-direction:column;text-align:center;}
-}
+/* ---------- additions: gallery, search bar, referee list, equip grid ---------- */
+.search-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:20px;}
+.search-row .field{flex:1;min-width:160px;}
+.search-row label{margin:0 0 6px;}
+.gallery-group{margin-bottom:32px;}
+.gallery-group h3{font-size:0.95rem;color:var(--gold);margin-bottom:10px;}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+.gallery-grid img,.gallery-grid video{width:100%;height:130px;object-fit:cover;border:1px solid var(--line);background:var(--soil-dark);}
+.gallery-grid figcaption{font-size:0.72rem;color:var(--muted);margin-top:4px;}
+.fixture-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--wash-2);flex-wrap:wrap;}
+.fixture-row img.team-logo{width:28px;height:28px;object-fit:contain;background:var(--soil-dark);border:1px solid var(--line);padding:2px;}
+.fixture-row .vs{flex:1;display:flex;align-items:center;gap:8px;font-size:0.9rem;flex-wrap:wrap;}
+.fixture-row .score{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--gold);}
+.fixture-row .poster-thumb{width:34px;height:34px;object-fit:cover;border:1px solid var(--gold);}
+.section-num{font-family:'IBM Plex Mono',monospace;color:var(--blueprint-line);font-size:0.75rem;margin-right:8px;}
