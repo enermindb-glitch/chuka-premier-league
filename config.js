@@ -1,21 +1,19 @@
-// ==========================================================
-// CHUKA PREMIER LEAGUE — site config
-// Edit the two values below, nothing else in this file.
-// ==========================================================
+/* ==========================================================
+   config.js — shared constants, loaded before every other script
+   ========================================================== */
 
-window.CPL_CONFIG = {
-  // Your Google Sheet's ID — the long string in its URL between
-  // /d/ and /edit, e.g. https://docs.google.com/spreadsheets/d/**THIS_PART**/edit
-  // The sheet must be shared as "Anyone with the link — Viewer" for the
-  // gviz CSV endpoint below to work (no need to publish each tab individually).
-  SHEET_ID: '1Ia_uEy0OHNEryW5eEDjBtDWiHohCoXiGNfzf7-MJKXw',
+// TODO: replace with your Google Sheet's ID (the long string in its URL:
+// https://docs.google.com/spreadsheets/d/{THIS_PART}/edit)
+// Sheet must be shared as "Anyone with the link — Viewer" for the
+// gviz CSV endpoint used in data.js to work.
+const SHEET_ID = '1MFylgUGATs3amgqBmjcbF_m6mz1qtJZURH9FFigo_B8';
 
-  // Your deployed Apps Script Web App URL (from backend.gs), used for
-  // PIN verification, profile edits, photo uploads, and enquiries.
-  API_URL: 'https://script.google.com/macros/s/AKfycbw2lAfwBPYVCTgprfCTvSbKlxqWMIjrIEImGARl7PNGZUbZwYtsGIQwuUNnKemR-D00CQ/exec',
+// Deployed Apps Script web app (from code.gs) — handles enquiries,
+// profile edits, and CPL verify lookups.
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHAhDZrEw6ZOCf6htRsFzL8dj1XAI7557VLDfd7z9T4kL8QCAdnovzZT_72tb3Ifg9Bg/exec';
 
-  SEASON_YEAR: 2026,
+// TODO: replace with your Google OAuth Client ID (from Google Cloud
+// Console > Credentials) — used by Google Sign-In on login.html / player.html.
+const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com';
 
-  // Site name shown in the header/footer on every page.
-  SITE_NAME: 'Chuka Premier League',
-};
+const LEAGUE_LABELS = { A: 'League A', B: 'League B' };
