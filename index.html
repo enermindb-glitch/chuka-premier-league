@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chuka Premier League</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site">
+  <img class="logo" src="logo-cpl.png" alt="CPL logo" onerror="this.style.display='none'">
+  <div class="brand"><strong>Chuka Premier League</strong><span>2026 Season</span></div>
+  <nav>
+    <a href="index.html" class="hi">Home</a>
+    <a href="league-a.html">League A</a>
+    <a href="league-b.html">League B</a>
+    <a href="news.html">News</a>
+    <a href="equipment.html">Equipment</a>
+    <a href="enquiries.html">Enquiries</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main>
+  <p class="eyebrow">Sheet 00 — Overview</p>
+  <h1>Welcome to the Chuka Premier League</h1>
+  <p>Standings, fixtures, player profiles, and everything else for League A and League B, updated straight from the league's official records.</p>
+
+  <div class="card-grid" style="margin-top:24px;">
+    <a class="card" href="league-a.html">
+      <h3>League A</h3>
+      <p>Standings, fixtures &amp; results, top scorers</p>
+    </a>
+    <a class="card" href="league-b.html">
+      <h3>League B</h3>
+      <p>Standings, fixtures &amp; results, top scorers</p>
+    </a>
+    <a class="card" href="news.html">
+      <h3>Latest News</h3>
+      <p>Announcements and match reports</p>
+    </a>
+    <a class="card" href="equipment.html">
+      <h3>Equipment</h3>
+      <p>Sponsors and league kit</p>
+    </a>
+  </div>
+
+  <p class="eyebrow" style="margin-top:40px;">Sheet 01 — Latest News</p>
+  <div id="newsPreview" class="card-grid">
+    <p class="loading">Loading news…</p>
+  </div>
+</main>
+
+<footer>Chuka Premier League &middot; <a href="enquiries.html">Contact us</a></footer>
+
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script>
+async function loadNewsPreview() {
+  const el = document.getElementById('newsPreview');
+  try {
+    const news = await fetchSheet('News');
+    const latest = news
+      .sort((a, b) => new Date(b.Date) - new Date(a.Date))
+      .slice(0, 3);
+    if (latest.length === 0) {
+      el.innerHTML = '<p class="empty">No news yet.</p>';
+      return;
+    }
+    el.innerHTML = latest.map(n => `
+      <a class="card" href="news.html">
+        <h3>${escapeHtml(n.Title)}</h3>
+        <p>${escapeHtml(n.Date)}</p>
+      </a>
+    `).join('');
+  } catch (err) {
+    el.innerHTML = `<p class="empty">Couldn't load news right now.</p>`;
+  }
+}
+loadNewsPreview();
+</script>
+</body>
+</html>
